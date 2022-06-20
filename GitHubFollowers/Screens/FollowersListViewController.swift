@@ -67,7 +67,7 @@ class FollowersListViewController: UIViewController {
         showLoadingView()
         
         NetworkManager.shared.getFollowers(for: username, page: page) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.dismissLoadingView()
             
             switch result {
@@ -116,7 +116,41 @@ class FollowersListViewController: UIViewController {
     }
     
     @objc func addButtonTapped() {
+        showLoadingView()
         
+        NetworkManager.shared.getUserInfo(for: username) { [weak self] result in
+            guard let self else { return }
+            self.dismissLoadingView()
+            
+            switch result {
+                case .success(let user):
+                    let favorite = Follower(login: user.login, avatarUrl: user.avatarUrl)
+                    
+                    PersistenceManager.updateWith(favorite: favorite, actionType: .add) { [weak self] error in
+                        guard let self else { return }
+                        
+                        guard let error else {
+                            self.presentGFAlertOnMainThread(
+                                title: "Success",
+                                message: "You added \(user.login) to your favorites list.",
+                                buttonTitle: "Ok"
+                            )
+                            return
+                        }
+                        
+                        self.presentGFAlertOnMainThread(
+                            title: "Something went wrong",
+                            message: error.rawValue,
+                            buttonTitle: "Ok"
+                        )
+                    }
+                case .failure(let error):
+                    self.presentGFAlertOnMainThread(
+                        title: "Something went wrong",
+                        message: error.rawValue,
+                        buttonTitle: "Ok")
+            }
+        }
     }
 }
 
