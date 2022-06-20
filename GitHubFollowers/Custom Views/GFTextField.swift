@@ -29,6 +29,7 @@ class GFTextField: UITextField {
         autocapitalizationType = .none
         placeholder = "Enter a username"
         returnKeyType = .search
+        clearButtonMode = .whileEditing
         
         translatesAutoresizingMaskIntoConstraints = false
     }
