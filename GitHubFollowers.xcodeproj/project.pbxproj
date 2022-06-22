@@ -20,6 +20,7 @@
 		C7013ED2285266810005F96D /* GFBodyLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7013ED1285266810005F96D /* GFBodyLabel.swift */; };
 		C7013ED4285267180005F96D /* GFAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7013ED3285267180005F96D /* GFAlertViewController.swift */; };
 		C7013ED628526C530005F96D /* UIViewController+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7013ED528526C530005F96D /* UIViewController+Ext.swift */; };
+		C72A974428634F5400DB7636 /* UIView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72A974328634F5400DB7636 /* UIView+Ext.swift */; };
 		C75E465128535FFD00A3BF4B /* Follower.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75E465028535FFD00A3BF4B /* Follower.swift */; };
 		C75E4653285360C800A3BF4B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75E4652285360C800A3BF4B /* User.swift */; };
 		C75E46562853634B00A3BF4B /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75E46552853634B00A3BF4B /* NetworkManager.swift */; };
@@ -60,6 +61,7 @@
 		C7013ED1285266810005F96D /* GFBodyLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GFBodyLabel.swift; sourceTree = "<group>"; };
 		C7013ED3285267180005F96D /* GFAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GFAlertViewController.swift; sourceTree = "<group>"; };
 		C7013ED528526C530005F96D /* UIViewController+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Ext.swift"; sourceTree = "<group>"; };
+		C72A974328634F5400DB7636 /* UIView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ext.swift"; sourceTree = "<group>"; };
 		C75E465028535FFD00A3BF4B /* Follower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Follower.swift; sourceTree = "<group>"; };
 		C75E4652285360C800A3BF4B /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		C75E46552853634B00A3BF4B /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 			children = (
 				C7013ED528526C530005F96D /* UIViewController+Ext.swift */,
 				C7F751EB285E272E004DBDB2 /* Date+Ext.swift */,
+				C72A974328634F5400DB7636 /* UIView+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -312,6 +315,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C72A974428634F5400DB7636 /* UIView+Ext.swift in Sources */,
 				C7013EC6285140540005F96D /* GFTextField.swift in Sources */,
 				C78259C5285A6E2200BCC470 /* UserInfoViewController.swift in Sources */,
 				C7F751EA285D2EBF004DBDB2 /* GFFollowerItemViewController.swift in Sources */,

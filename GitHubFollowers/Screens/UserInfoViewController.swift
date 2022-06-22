@@ -8,8 +8,7 @@
 import UIKit
 
 protocol UserInfoViewControllerDelegate: AnyObject {
-    func didTapGitHubProfile(for user: User)
-    func didTapGetFollowers(for user: User)
+    func didRequestFollowers(for username: String)
 }
 
 class UserInfoViewController: GFDataLoadingViewController {
@@ -22,7 +21,7 @@ class UserInfoViewController: GFDataLoadingViewController {
     var itemViews: [UIView] = []
     
     var follower: Follower!
-    weak var delegate: FollowersListViewControllerDelegate!
+    weak var delegate: UserInfoViewControllerDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,14 +45,8 @@ class UserInfoViewController: GFDataLoadingViewController {
     }
     
     private func configureUIElements(with user: User) {
-        let repoItemViewController = GFRepoItemViewController(user: user)
-        repoItemViewController.delegate =  self
-        
-        let followerItemViewController = GFFollowerItemViewController(user: user)
-        followerItemViewController.delegate = self
-        
-        self.add(childViewController: repoItemViewController, to: self.itemViewOne)
-        self.add(childViewController: followerItemViewController, to: self.itemViewTwo)
+        self.add(childViewController: GFRepoItemViewController(user: user, delegate: self), to: self.itemViewOne)
+        self.add(childViewController: GFFollowerItemViewController(user: user, delegate: self), to: self.itemViewTwo)
         self.add(childViewController: GFUserHeaderInfoViewController(user: user), to: self.headerView)
 
         self.dateLabel.text = "GitHub since \(user.createdAt.convertToMonthYearFormat())"
@@ -84,7 +77,7 @@ class UserInfoViewController: GFDataLoadingViewController {
         
         NSLayoutConstraint.activate([
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            headerView.heightAnchor.constraint(equalToConstant: 180),
+            headerView.heightAnchor.constraint(equalToConstant: 210),
             
             itemViewOne.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: padding),
             itemViewOne.heightAnchor.constraint(equalToConstant: itemHeight),
@@ -93,7 +86,7 @@ class UserInfoViewController: GFDataLoadingViewController {
             itemViewTwo.heightAnchor.constraint(equalToConstant: itemHeight),
             
             dateLabel.topAnchor.constraint(equalTo: itemViewTwo.bottomAnchor, constant: padding),
-            dateLabel.heightAnchor.constraint(equalToConstant: 18)
+            dateLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -109,21 +102,7 @@ class UserInfoViewController: GFDataLoadingViewController {
     }
 }
 
-extension UserInfoViewController: UserInfoViewControllerDelegate {
-    func didTapGitHubProfile(for user: User) {
-        guard let url = URL(string: user.htmlUrl) else {
-            presentGFAlertOnMainThread(
-                title: "Invalid URL",
-                message: "The URL attached to this user is invalid",
-                buttonTitle: "Ok"
-            )
-            
-            return
-        }
-        
-        presentSafariViewController(with: url)
-    }
-    
+extension UserInfoViewController: GFFollowerItemViewControllerDelegate {
     func didTapGetFollowers(for user: User) {
         guard user.followers != 0 else {
             presentGFAlertOnMainThread(
@@ -137,5 +116,21 @@ extension UserInfoViewController: UserInfoViewControllerDelegate {
         
         delegate.didRequestFollowers(for: user.login)
         dismissViewController()
+    }
+}
+
+extension UserInfoViewController: GFRepoItemViewControllerDelegate {
+    func didTapGitHubProfile(for user: User) {
+        guard let url = URL(string: user.htmlUrl) else {
+            presentGFAlertOnMainThread(
+                title: "Invalid URL",
+                message: "The URL attached to this user is invalid",
+                buttonTitle: "Ok"
+            )
+            
+            return
+        }
+        
+        presentSafariViewController(with: url)
     }
 }
