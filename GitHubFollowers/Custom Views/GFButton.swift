@@ -7,11 +7,10 @@ class GFButton: UIButton {
         configure()
     }
     
-    convenience init(backgroundColor: UIColor, title: String) {
+    convenience init(color: UIColor, title: String, systemImageName: String) {
         self.init(frame: .zero)
         
-        self.backgroundColor = backgroundColor
-        self.setTitle(title, for: .normal)
+        set(color: color, title: title, systemImageName: systemImageName)
     }
     
     required init?(coder: NSCoder) {
@@ -21,13 +20,17 @@ class GFButton: UIButton {
     private func configure() {
         translatesAutoresizingMaskIntoConstraints = false
 
-        layer.cornerRadius = 10
-        titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
-        setTitleColor(.white, for: .normal)
+        configuration = .tinted()
+        configuration?.cornerStyle = .medium
     }
     
-    func set(backgroundColor: UIColor, title: String) {
-        self.backgroundColor = backgroundColor
-        setTitle(title, for: .normal)
+    func set(color: UIColor, title: String, systemImageName: String) {
+        configuration?.baseBackgroundColor = color
+        configuration?.baseForegroundColor = color
+        configuration?.title = title
+        
+        configuration?.image = UIImage(systemName: systemImageName)
+        configuration?.imagePadding = 6
+        configuration?.imagePlacement = .leading
     }
 }
