@@ -21,7 +21,15 @@ class GFUserHeaderInfoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        addSubviews()
+        view.addSubviews(
+            avatarImageView,
+            usernameLabel,
+            nameLabel,
+            locationImageView,
+            locationLabel,
+            bioLabel
+        )
+        
         layoutUI()
         configureUiElements()
     }
@@ -36,16 +44,7 @@ class GFUserHeaderInfoViewController: UIViewController {
     }
     
     func configureUiElements() {
-        NetworkManager.shared.downloadImage(from: user.avatarUrl) { [weak self] image in
-            guard let self else {
-                return
-            }
-            
-            DispatchQueue.main.async {
-                self.avatarImageView.image = image
-            }
-        }
-        
+        avatarImageView.downloadImage(fromURL: user.avatarUrl)
         usernameLabel.text = user.login
         nameLabel.text = user.name ?? ""
         locationLabel.text = user.location ?? "No Location"
@@ -54,17 +53,6 @@ class GFUserHeaderInfoViewController: UIViewController {
         
         locationImageView.image = SFSymbols.location
         locationImageView.tintColor = .secondaryLabel
-    }
-    
-    func addSubviews() {
-        view.addSubviews(
-            avatarImageView,
-            usernameLabel,
-            nameLabel,
-            locationImageView,
-            locationLabel,
-            bioLabel
-        )
     }
     
     func layoutUI() {
