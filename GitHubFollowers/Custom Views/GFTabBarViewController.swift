@@ -8,10 +8,10 @@
 import UIKit
 
 class GFTabBarViewController: UITabBarController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         UITabBar.appearance().tintColor = .systemGreen
         viewControllers = [
             createSearchNavigationController(),

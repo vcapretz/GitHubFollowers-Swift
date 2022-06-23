@@ -1,7 +1,7 @@
 import UIKit
 
 class GFAlertViewController: UIViewController {
-
+    
     let containerView = GFAlertContainerView()
     let titleLabel = GFTitleLabel(textAlignment: .center, fontSize: 20)
     let messageLabel = GFBodyLabel(textAlignment: .center)
@@ -27,7 +27,7 @@ class GFAlertViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = UIColor.black.withAlphaComponent(0.75)
         
         view.addSubviews(containerView, titleLabel, actionButton, messageLabel)
@@ -73,7 +73,7 @@ class GFAlertViewController: UIViewController {
     func configureMessageLabel() {
         messageLabel.text = message ?? "Unable to complete request"
         messageLabel.numberOfLines = 4
-
+        
         NSLayoutConstraint.activate([
             messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             messageLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: padding),

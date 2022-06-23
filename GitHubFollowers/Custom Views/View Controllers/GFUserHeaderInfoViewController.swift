@@ -45,6 +45,7 @@ class GFUserHeaderInfoViewController: UIViewController {
                 self.avatarImageView.image = image
             }
         }
+        
         usernameLabel.text = user.login
         nameLabel.text = user.name ?? ""
         locationLabel.text = user.location ?? "No Location"

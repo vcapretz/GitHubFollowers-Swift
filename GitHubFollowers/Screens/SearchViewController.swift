@@ -1,7 +1,7 @@
 import UIKit
 
 class SearchViewController: UIViewController {
-
+    
     let logoImageView = UIImageView()
     let usernameTextField = GFTextField()
     let callToActionButton = GFButton(backgroundColor: .systemGreen, title: "Get Followers")
@@ -14,7 +14,7 @@ class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = .systemBackground
         
         view.addSubviews(logoImageView, usernameTextField, callToActionButton)
@@ -33,7 +33,7 @@ class SearchViewController: UIViewController {
     
     func createDismissKeyboardTapGesture() {
         let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
-
+        
         view.addGestureRecognizer(tap)
     }
     
