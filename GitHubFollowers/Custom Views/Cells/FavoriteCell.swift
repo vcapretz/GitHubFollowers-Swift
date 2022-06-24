@@ -19,6 +19,11 @@ class FavoriteCell: UITableViewCell {
         configure()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        avatarImageView.image = Images.avatarPlaceholder
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

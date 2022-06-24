@@ -36,14 +36,20 @@ class UserInfoViewController: GFDataLoadingViewController {
     }
     
     func getUserInfo() {
-        NetworkManager.shared.getUserInfo(for: follower.login) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-                case .success(let user):
-                    DispatchQueue.main.async { self.configureUIElements(with: user) }
-                case .failure(let error):
-                    self.presentGFAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
+        Task {
+            do {
+                let user = try await NetworkManager.shared.getUserInfo(for: follower.login)
+                configureUIElements(with: user)
+            } catch {
+                if let gfError = error as? GFError {
+                    presentGFAlert(
+                        title: "Something went wrong",
+                        message: gfError.rawValue,
+                        buttonTitle: "Ok"
+                    )
+                } else {
+                    presentDefaultAlert()
+                }
             }
         }
     }
@@ -122,7 +128,7 @@ class UserInfoViewController: GFDataLoadingViewController {
 extension UserInfoViewController: GFFollowerItemViewControllerDelegate {
     func didTapGetFollowers(for user: User) {
         guard user.followers != 0 else {
-            presentGFAlertOnMainThread(
+            presentGFAlert(
                 title: "No followers",
                 message: "This user has no followers",
                 buttonTitle: "Ok"
@@ -139,7 +145,7 @@ extension UserInfoViewController: GFFollowerItemViewControllerDelegate {
 extension UserInfoViewController: GFRepoItemViewControllerDelegate {
     func didTapGitHubProfile(for user: User) {
         guard let url = URL(string: user.htmlUrl) else {
-            presentGFAlertOnMainThread(
+            presentGFAlert(
                 title: "Invalid URL",
                 message: "The URL attached to this user is invalid",
                 buttonTitle: "Ok"

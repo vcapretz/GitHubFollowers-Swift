@@ -74,36 +74,41 @@ class FollowersListViewController: GFDataLoadingViewController {
         showLoadingView()
         isLoadingMoreFollowers = true
         
-        NetworkManager.shared.getFollowers(for: username, page: page) { [weak self] result in
-            guard let self else { return }
-            self.dismissLoadingView()
-            
-            switch result {
-                case .failure(let error):
-                    self.presentGFAlertOnMainThread(
+        Task {
+            do {
+                let followers = try await NetworkManager.shared.getFollowers(for: username, page: page)
+                
+                updateUI(with: followers)
+                dismissLoadingView()
+                isLoadingMoreFollowers = false
+            } catch {
+                if let gfError = error as? GFError {
+                    presentGFAlert(
                         title: "Error",
-                        message: error.rawValue,
+                        message: gfError.rawValue,
                         buttonTitle: "Ok"
                     )
-                case .success(let followers):
-                    if followers.count < 100 {
-                        self.hasMoreFollowers = false
-                    }
-                    
-                    self.followers.append(contentsOf: followers)
-                    
-                    if self.followers.isEmpty {
-                        DispatchQueue.main.async {
-                            self.showEmptyStateView(with: "This user doesn't have any followers. Go follow them 😄.", in: self.view)
-                        }
-                        
-                        return
-                    }
-                    self.updateData(on: self.followers)
+                } else {
+                    presentDefaultAlert()
+                }
+                
+                isLoadingMoreFollowers = false
+                dismissLoadingView()
             }
-            
-            self.isLoadingMoreFollowers = false
         }
+    }
+    
+    func updateUI(with followers: [Follower]) {
+        if followers.count < 100 { self.hasMoreFollowers = false }
+        self.followers.append(contentsOf: followers)
+        
+        if self.followers.isEmpty {
+            let message = "This user doesn't have any followers. Go follow them 😀."
+            self.showEmptyStateView(with: message, in: self.view)
+            return
+        }
+        
+        self.updateData(on: self.followers)
     }
     
     func configureDataSource() {
@@ -128,37 +133,47 @@ class FollowersListViewController: GFDataLoadingViewController {
     @objc func addButtonTapped() {
         showLoadingView()
         
-        NetworkManager.shared.getUserInfo(for: username) { [weak self] result in
-            guard let self else { return }
-            self.dismissLoadingView()
-            
-            switch result {
-                case .success(let user):
-                    let favorite = Follower(login: user.login, avatarUrl: user.avatarUrl)
+        Task {
+            do {
+                let user = try await NetworkManager.shared.getUserInfo(for: username)
+                
+                let favorite = Follower(login: user.login, avatarUrl: user.avatarUrl)
+                dismissLoadingView()
+                
+                PersistenceManager.updateWith(favorite: favorite, actionType: .add) { [weak self] error in
+                    guard let self else { return }
                     
-                    PersistenceManager.updateWith(favorite: favorite, actionType: .add) { [weak self] error in
-                        guard let self else { return }
-                        
-                        guard let error else {
-                            self.presentGFAlertOnMainThread(
+                    guard let error else {
+                        DispatchQueue.main.async {
+                            self.presentGFAlert(
                                 title: "Success",
                                 message: "You added \(user.login) to your favorites list.",
                                 buttonTitle: "Ok"
                             )
-                            return
                         }
-                        
-                        self.presentGFAlertOnMainThread(
+                        return
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.presentGFAlert(
                             title: "Something went wrong",
                             message: error.rawValue,
                             buttonTitle: "Ok"
                         )
                     }
-                case .failure(let error):
-                    self.presentGFAlertOnMainThread(
+                }
+            } catch {
+                if let gfError = error as? GFError {
+                    presentGFAlert(
                         title: "Something went wrong",
-                        message: error.rawValue,
-                        buttonTitle: "Ok")
+                        message: gfError.rawValue,
+                        buttonTitle: "Ok"
+                    )
+                } else {
+                    presentDefaultAlert()
+                }
+                
+                dismissLoadingView()
             }
         }
     }
@@ -215,7 +230,7 @@ extension FollowersListViewController: UserInfoViewControllerDelegate {
         
         page = 1
         followers.removeAll()
-        collectionView.scrollsToTop = true
+        collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
         
         if isSearching {
             navigationItem.searchController?.searchBar.text = ""
